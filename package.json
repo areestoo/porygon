@@ -1,0 +1,13 @@
+{
+  "name": "porygon-bot",
+  "version": "1.0.0",
+  "description": "Porygon Bot",
+  "main": "main.js",
+  "author": "Aristo Wibowanto",
+  "dependencies": {
+    "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+    "discord.js": "^11.4.2",
+    "google-spreadsheet": "^2.0.7",
+    "winston": "^3.2.1"
+  }
+}
