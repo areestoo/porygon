@@ -2,10 +2,15 @@
 var auth = require('./auth.json');
 const EVENT_LOG = ('event_log.json');
 var fs = require('fs');
-const ROLE_MESSAGE_ID = 578423051813650432;
 process.env.TZ = 'Europe/Amsterdam'
 const Discord = require('discord.js');
 const RichEmbed = require ('discord.js');
+var GoogleSpreadsheet = require('google-spreadsheet');
+var creds = require('./client_secret.json');
+// doc URL ID (pull from URL)
+var doc = new GoogleSpreadsheet('1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8');
+botWorksheetTitle = 'Discord attendance input';
+
 const client = new Discord.Client({
   token: auth.token,
   autorun: true
@@ -47,8 +52,8 @@ function addEvent(data){
 function buildEmbed(raidName, raidID, eventDateTime, userList){
   raidEmbed = {
     "title": raidName + " - #" + raidID,
-    "description": "`" + eventDateTime + "`\nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
-    "url": "https://docs.google.com/spreadsheets/d/1wBE0BDcTU5YYjcy4Dcp7gXSMtjsmdFrd_D-0PQ9WNBQ/edit?usp=sharing",
+    "description": "`" + eventDateTime + "``\nAbove is in Server Time. \nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "url": "https://docs.google.com/spreadsheets/d/19Y9XkAwTngavgPO2HFhbIfkAOFPM9a9t4pXmf2gVACA/edit?usp=sharing",
     "color": 16376054,
     "timestamp": new Date(),
     "footer": {
@@ -73,7 +78,7 @@ function createRaid(args,msg){
   jRaid.name = args.shift();
   jRaid.id = args.shift();
   // ... means variable number of args
-  jRaid.start = new Date(...args);
+  jRaid.start = new Date(...args).toLocaleString("en-us",{timeZone: "Australia/Melbourne", timeZoneName: "short"});
   eRaid = buildEmbed(jRaid.name, jRaid.id, jRaid.start,);
   //todo: add users
   jRaid.messageid = msg.channel.send({embed: eRaid}).then(async function (sentMsg) { // 'sent' is that message you just sent
@@ -109,26 +114,33 @@ function findEvent(messageid){
   return false;
 }
 
-function foundEmoji(emoji){
-  switch(emoji){
-    case '✅':
-      return "Attending"
-      break;
-    case '❌':
-      return "Not attending"
-      break;
-    case '❓':
-      return "Tentative"
-      break;
-    default:
-      return false;
+function findFutureRaids(){
+  try{
+    eventList = fs.readFileSync(EVENT_LOG);
+    eventList = JSON.parse(eventList);
   }
-  /*if (emoji == "✅" || emoji == "❌" || emoji == "❓"){
-    return true;
+  catch(e){
+    console.log(e);
+    eventList = [];
+    return false;
+  }
+  currentDateTime = new Date();
+  newEventList = [];
+  //Scan event log for all events, and compare if current time/date is before the listed one
+  //Push to returning array if time has not passed.
+  for (i=0;i<eventList.length;i++){
+    if (currentDateTime>new Date(eventList[i].start)){
+    }
+    else {
+      newEventList.push(eventList[i]);
+    }
+  }
+  if (newEventList.length){
+    return newEventList;
   }
   else {
     return false;
-  }*/
+  }
 }
 
 function getKeyByValue(object, value) {
@@ -163,7 +175,7 @@ function sendUser(msgOut, msg){
   msg.author.send(msgOut);
 }
 
-function updateUser(dUser,status){
+function updateUser(dUser,added,emoji,recordedUser){
   var jUser = {};
   //set discord ID
   jUser.id = dUser.user.id;
@@ -177,11 +189,42 @@ function updateUser(dUser,status){
   wowClassIDs = Object.values(wowClass);
   jUser.class = dUser._roles.filter(element => wowClassIDs.includes(element))[0]
   jUser.class = getKeyByValue(wowClass,jUser.class);
-  //set status
-  jUser.status = status;
-  //set comments
-  jUser.comment = "Comment test";
-  //writeRaid(jUser);
+
+  //set status array
+  //[ATTENDING,TENTATIVE,NOTATTENDING]
+  if(recordedUser != "No User Found"){
+    jUser.status = recordedUser.status
+  }
+  else{
+    //console.log("wtf")
+    jUser.status = ["","",""];
+  }
+  if (added){
+    switch(emoji){
+      case '❌':
+        jUser.status[0] = "Not attending"
+        break;
+      case '❓':
+        jUser.status[1] = "Tentative"
+        break;
+      case '✅':
+        jUser.status[2] = "Attending"
+        break;
+    }
+  }
+  else {
+    switch(emoji){
+      case '❌':
+        jUser.status[0] = ""
+        break;
+      case '❓':
+        jUser.status[1] = ""
+        break;
+      case '✅':
+        jUser.status[2] = ""
+        break;
+    }
+  }
   return jUser;
 }
 
@@ -192,18 +235,16 @@ function updateRaid(messageid,user,added,fs,status){
   fileLocation = "raids/" + jEvent.id + ".JSON";
   jRaid = readJSON(fs,fileLocation);
   //create user object from discord object
-  if(added){
-    jUser = updateUser(user,status);
-  }
-  else if(!added){
-    jUser = updateUser(user,"No status");
-  }
+
+
   //find user if exists, else push new
   jRaidIndex = searchArray(user.user.id, jRaid.users);
   if (jRaidIndex>=0){
+    jUser = updateUser(user,added,status,jRaid.users[jRaidIndex]);
     jRaid.users[jRaidIndex] = jUser;
   }
   else {
+    jUser = updateUser(user,added,status,"No User Found");
     jRaid.users.push(jUser);
   }
   //write to object
@@ -211,12 +252,87 @@ function updateRaid(messageid,user,added,fs,status){
   return;
 }
 
+/*function newUpdate(args, msg){
+  futureRaids = findFutureRaids();
+  for (i=0;i<futureRaids.length;i++){
+    console.log(futureRaids[i]);
+    msg.channel.fetchMessage(futureRaids[i].messageid)
+      .then(message => findReactions(message))
+      .catch(console.error);
+  }
+}*/
+
+/*function findReactions(msg){
+  //Scans reactions for map users for each emoji
+  //then pushes to array
+  homeGuild = client.guilds.get(msg.member.guild.id);
+  eventChannel = msg.channel;
+
+  usersReacted = [[],[],[]];;
+  for (const [keys, values] of msg.reactions.filter(a => a._emoji.name == '✅').get('✅').users.entries()) {
+    usersReacted[0].push(keys);
+  }
+  for (const [keys, values] of msg.reactions.filter(a => a._emoji.name == '❓').get('❓').users.entries()) {
+    usersReacted[1].push(keys);
+  }
+  for (const [keys, values] of msg.reactions.filter(a => a._emoji.name == '❌').get('❌').users.entries()) {
+    usersReacted[2].push(keys);
+  }
+  console.log(usersReacted);
+}*/
+
 function writeRaid(data){
   fileLocation = "raids/" + data.id + ".json";
   data = JSON.stringify(data, null, 2);
   fs.writeFileSync(fileLocation, data, finished);
   function finished(err){
     console.log("Finished writing to " + fileLocation);
+  }
+}
+
+function writeSpreadsheet(args,msg){
+  //console.log(args);
+  if (args != ''){
+    jRaid = readJSON(fs,"raids/" + args + ".JSON");
+    // Authenticate with the Google Spreadsheets API.
+    doc.useServiceAccountAuth(creds, function (err) {
+      doc.getInfo(function(err, info) {
+        //Find sheet name from botWorksheetTitle variable
+        console.log('\n\nLoaded doc: '+info.title+' by '+info.author.email);
+        for (i=0; i<info.worksheets.length; i++){
+          if (info.worksheets[i].title == botWorksheetTitle){
+            var sheet = info.worksheets[i];
+            break;
+          }
+        }
+        console.log('Worksheet selected: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount+'\n');
+        //Write to doc
+        sheet.getRows(1, function (err, rows) {
+          for (i = 0;i<jRaid.users.length;i++){
+            rows[i].id = jRaid.users[i].id;
+            rows[i].player = jRaid.users[i].name;
+            rows[i].class = jRaid.users[i].class;
+            if (jRaid.users[i].status[0]){
+              rows[i].status = jRaid.users[i].status[0];
+            }
+            else if (jRaid.users[i].status[1]){
+              rows[i].status = jRaid.users[i].status[1];
+            }
+            else if (jRaid.users[i].status[2]){
+              rows[i].status = jRaid.users[i].status[2];
+            }
+            else {
+              rows[i].status = "No Status"
+            }
+            rows[i].save();
+          }
+        });
+        console.log("Worksheet updated.")
+      });
+    });
+  }
+  else{
+    sendChannel("Please input raid # using `!update <number>`",msg)
   }
 }
 
@@ -234,21 +350,23 @@ client.on('raw', async event => {
   homeGuild = client.guilds.get(data.guild_id);
   guildUser = await homeGuild.fetchMember(data.user_id);
   emojiRole = homeGuild.roles.find(emojiRole => emojiRole.name === data.emoji.name);
-  status = foundEmoji(data.emoji.name);
-  if (data.message_id == ROLE_MESSAGE_ID){
+  eventChannel = await client.channels.get(data.channel_id);
+
+  if (!reactUser.bot){
+      eventMessage = await eventChannel.fetchMessage(data.message_id);
+      //console.log(eventMessage.reactions);
+      eventIterator = eventMessage.reactions.entries();
+      let eventResult = eventIterator.next();
+      while (!eventResult.done) {
+       tempValue = eventResult.value;
+       //console.log(tempValue);
+       eventResult = eventIterator.next();
+      }
+
     if (event.t == 'MESSAGE_REACTION_ADD'){
-      console.log(`${guildUser.user.username} added "${data.emoji.name}" to class.`);
-      guildUser.addRole(emojiRole);
+      updateRaid(data.message_id,guildUser,true,fs,data.emoji.name);
     }else if(event.t== 'MESSAGE_REACTION_REMOVE'){
-      console.log(`${guildUser.user.username} removed their "${data.emoji.name}" class.`);
-      guildUser.removeRole(emojiRole);
-    }
-  }
-  else if (status && !reactUser.bot){
-    if (event.t == 'MESSAGE_REACTION_ADD'){
-      updateRaid(data.message_id,guildUser,true,fs,status);
-    }else if(event.t== 'MESSAGE_REACTION_REMOVE'){
-      updateRaid(data.message_id,guildUser,false,fs,status);
+      updateRaid(data.message_id,guildUser,false,fs,data.emoji.name);
     }
   }
 });
@@ -291,7 +409,9 @@ client.on('message', msg => {
       msg.delete(0);
       //sendUser("**!" + cmd + "** command received." + argmsg, msg);
       switch(cmd) {
-        case 'help':
+        case 'porygon':
+          sendChannel("```!raid <name> <id> yyyy mm(-1) dd hh mm ss``` in LOCAL time format.",msg);
+          break;
         case 'hello':
           sendChannel("Hello "+user,msg);
           break;
@@ -299,6 +419,14 @@ client.on('message', msg => {
           //format - !raid <name> <id> <yyyy> <mm> <dd> <hh> <mm> <ss>
           createRaid(args,msg);
           break;
+        case 'potato':
+          writeSpreadsheet(args,msg);
+          break;
+        case 'update':
+          writeSpreadsheet(args,msg);
+          break;
+        default:
+          console.log("Command not recognized, not doing anything.");
       }
    }
 });

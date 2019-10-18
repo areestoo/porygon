@@ -1,0 +1,202 @@
+{
+  "name": "BRM_PVP_RAID",
+  "id": "5.x",
+  "start": "2019-09-29T07:00:00.000Z",
+  "messageid": "626772657538596915",
+  "embed": {
+    "title": "BRM_PVP_RAID - #5.x",
+    "description": "`Sun Sep 29 2019 15:00:00 GMT+0800 (Australian Western Standard Time)`\nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "url": "https://docs.google.com/spreadsheets/d/1wBE0BDcTU5YYjcy4Dcp7gXSMtjsmdFrd_D-0PQ9WNBQ/edit?usp=sharing",
+    "color": 16376054,
+    "timestamp": "2019-09-26T13:30:47.120Z",
+    "footer": {
+      "text": "POSTED",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    },
+    "thumbnail": {
+      "url": "https://media-hearth.cursecdn.com/attachments/0/699/ragnaros.png"
+    },
+    "author": {
+      "name": "Porygon Bot",
+      "url": "https://gitlab.com/areesto",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    }
+  },
+  "users": [
+    {
+      "id": "106433962955526144",
+      "name": "Helpie",
+      "class": "Druid",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "149346358820601857",
+      "name": "ohso",
+      "class": "Rogue",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "227602716740812810",
+      "name": "EsDeath",
+      "class": "Mage",
+      "status": "Not attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "192206433461207040",
+      "name": "Dannix",
+      "class": "Warrior",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "117196112338747397",
+      "name": "lukas",
+      "class": "Hunter",
+      "status": "Not attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "137674057221931008",
+      "name": "TMan",
+      "class": "Warrior",
+      "status": "Not attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "146221065322889216",
+      "name": "Ari",
+      "class": "Druid",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "217558983785971714",
+      "name": "zyzzbrah",
+      "class": "Warlock",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "120147236855349248",
+      "name": "Xd",
+      "class": "Mage",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "546646655538036749",
+      "name": "Trippin",
+      "class": "Hunter",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "204962701426819072",
+      "name": "Crustie",
+      "class": "Rogue",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "159623632430170112",
+      "name": "Royal",
+      "class": "Rogue",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "191796843145986048",
+      "name": "Lemonlet",
+      "class": "Warrior",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "149112921274843136",
+      "name": "Sparrogman",
+      "class": "Shaman",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "351270123035820043",
+      "name": "Lemme",
+      "class": "Shaman",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "163244490423926784",
+      "name": "Deathbykite",
+      "class": "Hunter",
+      "status": "Tentative",
+      "comment": "Comment test"
+    },
+    {
+      "id": "158857618423676928",
+      "name": "Big_Chase",
+      "class": "Warrior",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "225588548466638848",
+      "name": "Shracken",
+      "class": "Warlock",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "123699204181721090",
+      "name": "Frank",
+      "class": "Rogue",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "232174038519119873",
+      "name": "Reignstorm",
+      "class": "Mage",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "242225144624447490",
+      "name": "fid",
+      "class": "Rogue",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "182337135674785792",
+      "name": "libbee",
+      "class": "Priest",
+      "status": "Tentative",
+      "comment": "Comment test"
+    },
+    {
+      "id": "260713832899543041",
+      "name": "Stryder",
+      "class": "Hunter",
+      "status": "Tentative",
+      "comment": "Comment test"
+    },
+    {
+      "id": "159890583920443392",
+      "name": "👌👌Snagz ✔✔",
+      "class": "Mage",
+      "status": "Attending",
+      "comment": "Comment test"
+    },
+    {
+      "id": "141562524897247232",
+      "name": "Pce",
+      "class": "Warrior",
+      "status": "Attending",
+      "comment": "Comment test"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "potato",
+  "id": "1",
+  "start": "2019-09-26T06:37:00.000Z",
+  "messageid": "615449420405932042",
+  "embed": {
+    "title": "potato - #1",
+    "description": "`Thu Sep 26 2019 14:37:00 GMT+0800 (Australian Western Standard Time)`\nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "url": "https://docs.google.com/spreadsheets/d/1wBE0BDcTU5YYjcy4Dcp7gXSMtjsmdFrd_D-0PQ9WNBQ/edit?usp=sharing",
+    "color": 16376054,
+    "timestamp": "2019-08-26T07:36:13.176Z",
+    "footer": {
+      "text": "POSTED",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    },
+    "thumbnail": {
+      "url": "https://media-hearth.cursecdn.com/attachments/0/699/ragnaros.png"
+    },
+    "author": {
+      "name": "Porygon Bot",
+      "url": "https://gitlab.com/areesto",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    }
+  },
+  "users": []
+}
