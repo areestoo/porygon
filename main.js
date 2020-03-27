@@ -7,9 +7,6 @@ const Discord = require('discord.js');
 const RichEmbed = require ('discord.js');
 var GoogleSpreadsheet = require('google-spreadsheet');
 var creds = require('./client_secret.json');
-// doc URL ID (pull from URL)
-var doc = new GoogleSpreadsheet('1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8');
-botWorksheetTitle = 'Discord attendance input';
 
 const client = new Discord.Client({
   token: auth.token,
@@ -19,6 +16,30 @@ const events = {
 	MESSAGE_REACTION_ADD: 'messageReactionAdd',
 	MESSAGE_REACTION_REMOVE: 'messageReactionRemove',
 };
+const googleSheetsList = {
+  "ONY" : "1Sc5pAoFz0J6e49cWflagyc8ifrUpPn5FgSGXqDseJ0A",
+  "MC" : "1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8",
+  "ALT" : "1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8",
+  "SPEED" : "1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8",
+  "BWL" : "1bE6X-RnyvhtobsRWl1rszNdYXaMPUFa9CLS_XJApPy8",
+  "ZG" : "",
+  "AQ20" : "",
+  "AQ40" : "",
+  "NAXX" : "",
+  "default" : ""
+}
+const googleSheetsBotSheetTitles = {
+  "ONY" : "ONY_Input",
+  "MC" : "MC_Input",
+  "ALT" : "",
+  "SPEED" : "BWL_Input",
+  "BWL" : "BWL_Input",
+  "ZG" : "",
+  "AQ20" : "",
+  "AQ40" : "",
+  "NAXX" : "",
+  "default" : "1 Discord attendance input"
+}
 const wowClass = {
   "Warrior": "567702019985506304",
   "Shaman": "567702022594363398",
@@ -29,6 +50,33 @@ const wowClass = {
   "Mage": "567702068874444803",
   "Warlock": "567702028110004225"
 };
+const wowRaidList = {
+  "SPEED" : "https://cdn.discordapp.com/attachments/656609894299861002/665798969191825427/MCSANIC.png",
+  "MC" : "https://cdn.discordapp.com/attachments/617592149067825154/664814019101851648/back.png",
+  "ONY" : "https://cdn.discordapp.com/attachments/615451658058596355/664789982556323870/ff.png",
+  "BWL" : "https://cdn.discordapp.com/attachments/615451658058596355/665176531089490016/UFXGWT6.jpg",
+  "ZG" : "",
+  "AQ20" : "",
+  "AQ40" : "",
+  "NAXX" : "",
+  "default" : ""
+};
+const wowRoleList = [
+  "tank",
+  "warrior",
+  "rogue",
+  "feral",
+  "enhance",
+  "hunter",
+  "mage",
+  "warlock",
+  "elemental",
+  "shadow",
+  "balance",
+  "priest",
+  "shaman",
+  "druid"
+];
 
 function addEvent(data){
   eventData = [];
@@ -50,9 +98,16 @@ function addEvent(data){
 }
 
 function buildEmbed(raidName, raidID, eventDateTime, userList){
+  eventRaidInstance = "default";
+  Object.keys(wowRaidList).forEach( (wowRaid) => {
+    if (raidID.search(wowRaid) > -1) {
+      eventRaidInstance = wowRaid;
+    }
+  })
+  eventRaidInstanceImage = wowRaidList[eventRaidInstance];
   raidEmbed = {
     "title": raidName + " - #" + raidID,
-    "description": "`" + eventDateTime + "``\nAbove is in Server Time. \nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "description": eventDateTime + "\nAbove is in Server Time. \nPlease RSVP attendance to this raid by clicking on the class/role you intend to come with.",
     "url": "https://docs.google.com/spreadsheets/d/19Y9XkAwTngavgPO2HFhbIfkAOFPM9a9t4pXmf2gVACA/edit?usp=sharing",
     "color": 16376054,
     "timestamp": new Date(),
@@ -61,7 +116,7 @@ function buildEmbed(raidName, raidID, eventDateTime, userList){
       "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png",
     },
     "thumbnail": {
-      "url": "https://media-hearth.cursecdn.com/attachments/0/699/ragnaros.png"
+      "url": eventRaidInstanceImage
     },
     "author": {
       "name": "Porygon Bot",
@@ -86,13 +141,25 @@ function createRaid(args,msg){
     console.log("Raid message embed posted @ " + jRaid.messageid);
     console.log('Writing to raid registry.');
     addEvent(jRaid);
-    sentMsg.react("✅");
-    sentMsg.react("❌");
-    sentMsg.react("❓");
+    //console.log(sentMsg);
+    wowRoleList.forEach(async (wowRoleListItem) => {
+      await sentMsg.react(findEmojiID(sentMsg.guild,wowRoleListItem));
+    })
+
     jRaid.embed = eRaid;
     jRaid.users = [];
     writeRaid(jRaid);
   });
+}
+
+function findEmojiID(homeGuild, emojiName){
+  for(var [eKey, eValue] of homeGuild.emojis){
+    //console.log(eValue.name);
+    if (emojiName == eValue.name){
+      return eValue.id;
+    }
+  }
+  return false;
 }
 
 //Returns event object if exists, else returns false
@@ -148,10 +215,16 @@ function getKeyByValue(object, value) {
 }
 
 function readJSON(fs,fileLocation){
-  data = fs.readFileSync(fileLocation);
-  jRaid = JSON.parse(data);
-  /*console.log('PARSED DATA:');
-  console.log(jRaid);*/
+  try{
+    data = fs.readFileSync(fileLocation);
+    jRaid = JSON.parse(data);
+    /*console.log('PARSED DATA:');
+    console.log(jRaid);*/
+  }
+  catch(error){
+    console.error(error);
+    jRaid = false;
+  }
   return jRaid;
 }
 
@@ -186,51 +259,20 @@ function updateUser(dUser,added,emoji,recordedUser){
       jUser.name = dUser.user.username;
   }
   //Find User's class by comparing server roles and wowClass. Returns first matching value.
-  wowClassIDs = Object.values(wowClass);
-  jUser.class = dUser._roles.filter(element => wowClassIDs.includes(element))[0]
-  jUser.class = getKeyByValue(wowClass,jUser.class);
+  //wowClassIDs = Object.values(wowClass);
+  jUser.class = emoji
 
-  //set status array
-  //[ATTENDING,TENTATIVE,NOTATTENDING]
-  if(recordedUser != "No User Found"){
-    jUser.status = recordedUser.status
-  }
-  else{
-    //console.log("wtf")
-    jUser.status = ["","",""];
-  }
-  if (added){
-    switch(emoji){
-      case '❌':
-        jUser.status[0] = "Not attending"
-        break;
-      case '❓':
-        jUser.status[1] = "Tentative"
-        break;
-      case '✅':
-        jUser.status[2] = "Attending"
-        break;
-    }
-  }
-  else {
-    switch(emoji){
-      case '❌':
-        jUser.status[0] = ""
-        break;
-      case '❓':
-        jUser.status[1] = ""
-        break;
-      case '✅':
-        jUser.status[2] = ""
-        break;
-    }
-  }
   return jUser;
 }
 
-function updateRaid(messageid,user,added,fs,status){
+function updateRaid(messageid,user,added,fs,emoji){
   //pull event list from EVENT_LOG and return specific event from messageID
   jEvent = findEvent(messageid);
+  //return if no event found
+  if (!jEvent){
+    console.log("No matching event found for reaction.")
+    return;
+  }
   //pull raid event object from id.json
   fileLocation = "raids/" + jEvent.id + ".JSON";
   jRaid = readJSON(fs,fileLocation);
@@ -238,17 +280,19 @@ function updateRaid(messageid,user,added,fs,status){
 
 
   //find user if exists, else push new
-  jRaidIndex = searchArray(user.user.id, jRaid.users);
-  if (jRaidIndex>=0){
-    jUser = updateUser(user,added,status,jRaid.users[jRaidIndex]);
-    jRaid.users[jRaidIndex] = jUser;
+  if (jRaid){
+    jRaidIndex = searchArray(user.user.id, jRaid.users);
+    if (jRaidIndex>=0){
+      jUser = updateUser(user,added,emoji,jRaid.users[jRaidIndex]);
+      jRaid.users[jRaidIndex] = jUser;
+    }
+    else {
+      jUser = updateUser(user,added,emoji,"No User Found");
+      jRaid.users.push(jUser);
+    }
+    //write to object
+    writeRaid(jRaid);
   }
-  else {
-    jUser = updateUser(user,added,status,"No User Found");
-    jRaid.users.push(jUser);
-  }
-  //write to object
-  writeRaid(jRaid);
   return;
 }
 
@@ -295,39 +339,48 @@ function writeSpreadsheet(args,msg){
   if (args != ''){
     jRaid = readJSON(fs,"raids/" + args + ".JSON");
     // Authenticate with the Google Spreadsheets API.
+    docID = "default";
+    Object.keys(googleSheetsList).forEach( (wowRaid) => {
+      if (args.toString().search(wowRaid) > -1) {
+        docID = wowRaid;
+      }
+    })
+    sheetID = "default";
+    Object.keys(googleSheetsBotSheetTitles).forEach( (wowRaid) => {
+      if (args.toString().search(wowRaid) > -1) {
+        sheetID = wowRaid;
+      }
+    })
+    var doc = new GoogleSpreadsheet(googleSheetsList[docID]);
     doc.useServiceAccountAuth(creds, function (err) {
       doc.getInfo(function(err, info) {
-        //Find sheet name from botWorksheetTitle variable
-        console.log('\n\nLoaded doc: '+info.title+' by '+info.author.email);
-        for (i=0; i<info.worksheets.length; i++){
-          if (info.worksheets[i].title == botWorksheetTitle){
-            var sheet = info.worksheets[i];
-            break;
+        //Find sheet name sheetID variable
+        try {
+          console.log('\n\nLoaded doc: '+info.title+' by '+info.author.email);
+          for (i=0; i<info.worksheets.length; i++){
+            if (info.worksheets[i].title == googleSheetsBotSheetTitles[sheetID]){
+              var sheet = info.worksheets[i];
+              console.log(sheet);
+              break;
+            }
           }
+          console.log('Worksheet selected: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount+'\n');
+          //Write to doc
+          sheet.getRows(1, function (err, rows) {
+            console.log(rows);
+            for (i = 0;i<jRaid.users.length;i++){
+              rows[i].id = jRaid.users[i].id;
+              rows[i].player = jRaid.users[i].name;
+              rows[i].class = jRaid.users[i].class;
+              rows[i].status = "Attending";
+              rows[i].save();
+            }
+          });
+          console.log("Worksheet updated.")
         }
-        console.log('Worksheet selected: '+sheet.title+' '+sheet.rowCount+'x'+sheet.colCount+'\n');
-        //Write to doc
-        sheet.getRows(1, function (err, rows) {
-          for (i = 0;i<jRaid.users.length;i++){
-            rows[i].id = jRaid.users[i].id;
-            rows[i].player = jRaid.users[i].name;
-            rows[i].class = jRaid.users[i].class;
-            if (jRaid.users[i].status[0]){
-              rows[i].status = jRaid.users[i].status[0];
-            }
-            else if (jRaid.users[i].status[1]){
-              rows[i].status = jRaid.users[i].status[1];
-            }
-            else if (jRaid.users[i].status[2]){
-              rows[i].status = jRaid.users[i].status[2];
-            }
-            else {
-              rows[i].status = "No Status"
-            }
-            rows[i].save();
-          }
-        });
-        console.log("Worksheet updated.")
+        catch{
+          return;
+        }
       });
     });
   }
@@ -349,7 +402,7 @@ client.on('raw', async event => {
   reactUser = await client.fetchUser(data.user_id);;
   homeGuild = client.guilds.get(data.guild_id);
   guildUser = await homeGuild.fetchMember(data.user_id);
-  emojiRole = homeGuild.roles.find(emojiRole => emojiRole.name === data.emoji.name);
+  //emojiRole = homeGuild.roles.find(emojiRole => emojiRole.name === data.emoji.name);
   eventChannel = await client.channels.get(data.channel_id);
 
   if (!reactUser.bot){

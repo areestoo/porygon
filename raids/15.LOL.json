@@ -1,0 +1,37 @@
+{
+  "name": "League_Inhouses",
+  "id": "15.LOL",
+  "start": "12/7/2019, 9:00:00 PM GMT+11",
+  "messageid": "652379664123166730",
+  "embed": {
+    "title": "League_Inhouses - #15.LOL",
+    "description": "`12/7/2019, 9:00:00 PM GMT+11'\nAbove is in Server Time. \nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "url": "https://docs.google.com/spreadsheets/d/19Y9XkAwTngavgPO2HFhbIfkAOFPM9a9t4pXmf2gVACA/edit?usp=sharing",
+    "color": 16376054,
+    "timestamp": "2019-12-06T05:23:52.207Z",
+    "footer": {
+      "text": "POSTED",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    },
+    "thumbnail": {
+      "url": "https://media-hearth.cursecdn.com/attachments/0/699/ragnaros.png"
+    },
+    "author": {
+      "name": "Porygon Bot",
+      "url": "https://gitlab.com/areesto",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    }
+  },
+  "users": [
+    {
+      "id": "146221065322889216",
+      "name": "Ari",
+      "class": "Druid",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    }
+  ]
+}

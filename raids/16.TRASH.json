@@ -1,0 +1,347 @@
+{
+  "name": "MC_trash_farm",
+  "id": "16.TRASH",
+  "start": "12/15/2019, 7:30:00 PM GMT+11",
+  "messageid": "654303219903758366",
+  "embed": {
+    "title": "MC_trash_farm - #16.TRASH",
+    "description": "`12/15/2019, 7:30:00 PM GMT+11'\nAbove is in Server Time. \nPlease RSVP attendance to this raid by with ✅, ❌ or ❓",
+    "url": "https://docs.google.com/spreadsheets/d/19Y9XkAwTngavgPO2HFhbIfkAOFPM9a9t4pXmf2gVACA/edit?usp=sharing",
+    "color": 16376054,
+    "timestamp": "2019-12-11T12:47:24.630Z",
+    "footer": {
+      "text": "POSTED",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    },
+    "thumbnail": {
+      "url": "https://media-hearth.cursecdn.com/attachments/0/699/ragnaros.png"
+    },
+    "author": {
+      "name": "Porygon Bot",
+      "url": "https://gitlab.com/areesto",
+      "icon_url": "http://fanaru.com/pokemon/image/106936-pokemon-porygon.png"
+    }
+  },
+  "users": [
+    {
+      "id": "128510902390489088",
+      "name": "Cyro",
+      "class": "Mage",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "159623632430170112",
+      "name": "Royal",
+      "class": "Rogue",
+      "status": [
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "211788849183981568",
+      "name": "Vox",
+      "class": "Rogue",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "219375963442511872",
+      "name": "Compz",
+      "class": "Warrior",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "227602716740812810",
+      "name": "EsDeath",
+      "class": "Mage",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "545946358960619530",
+      "name": "Jaycinho",
+      "class": "Warlock",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "351270123035820043",
+      "name": "Lemme",
+      "class": "Shaman",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "191200763312209921",
+      "name": "Goy",
+      "class": "Warrior",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "597290582359932929",
+      "name": "Yello",
+      "class": "Priest",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "487022511452585994",
+      "name": "TQYK",
+      "class": "Warrior",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "242225144624447490",
+      "name": "fid",
+      "class": "Rogue",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "225588548466638848",
+      "name": "Shracken",
+      "class": "Warlock",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "551639716546740273",
+      "name": "Executie",
+      "class": "Warrior",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "575549665240547328",
+      "name": "Keo",
+      "class": "Warlock",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "364005750625927168",
+      "name": "Nifi",
+      "class": "Mage",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "204962701426819072",
+      "name": "Crustie",
+      "class": "Rogue",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "121519562838638594",
+      "name": "Lefevre",
+      "class": "Warlock",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "216106402077343745",
+      "name": "Gïgåßåñgêr",
+      "class": "Shaman",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "347380415406800898",
+      "name": "Scoundly (Speechless)",
+      "class": "Mage",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "127986236425109504",
+      "name": "Jux",
+      "class": "Mage",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "149112921274843136",
+      "name": "Sparrogman",
+      "class": "Shaman",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "281724153239961602",
+      "name": "Graky",
+      "class": "Rogue",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "326163842692284420",
+      "name": "Pheon",
+      "class": "Rogue",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "137674057221931008",
+      "name": "TMan",
+      "class": "Warrior",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "144724661366685696",
+      "name": "Jame",
+      "class": "Druid",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "182337135674785792",
+      "name": "Libbee",
+      "class": "Priest",
+      "status": [
+        "",
+        "",
+        "Attending"
+      ]
+    },
+    {
+      "id": "215458856644378624",
+      "name": "Hornbawl",
+      "class": "Druid",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    },
+    {
+      "id": "546646655538036749",
+      "name": "Trippin",
+      "class": "Hunter",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "226607945390096384",
+      "name": "Mallet",
+      "class": "Shaman",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "396263439816720384",
+      "name": "Zav",
+      "class": "Priest",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "188458082660122624",
+      "name": "Lasthour",
+      "class": "Priest",
+      "status": [
+        "Not attending",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": "149346358820601857",
+      "name": "ohso",
+      "class": "Rogue",
+      "status": [
+        "",
+        "Tentative",
+        ""
+      ]
+    }
+  ]
+}
