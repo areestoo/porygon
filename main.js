@@ -454,7 +454,7 @@ function fetchAttendance(args, msg){
           .then(data => data.exportedCharacters)
           .then(exportedChatacters => {
             if (exportedChatacters == undefined){
-              sendChannel('```Unable to retrieve raid data. Please use !attendance raidlist to determine valid RaidID.```',msg);
+              sendChannel('```Unable to retrieve raid data. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
             } else {
               var characterlist = '```';
               exportedChatacters.forEach(function(character){
@@ -465,14 +465,14 @@ function fetchAttendance(args, msg){
             }
           })
         } else {
-          sendChannel('```Invalid RaidID provided. Please use !attendance raidlist to determine valid RaidID.```',msg);
+          sendChannel('```Invalid RaidID provided. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
         }
         break;
       default:
         sendChannel('```USAGE:\n\
-        !attendance raidlist [<days>]\n\
+        !trivialattendance raidlist [<days>]\n\
         .Provides raid logs available from past 7 days. <days> is an optional argument to specify an alternate number of days to fetch raid history. If you make this threshold too large, discord isn\'t able to send the message.\n\n\
-        !attendance fetch <RaidID>\n\
+        !trivialattendance fetch <RaidID>\n\
         .Fetches attendance from specified <RaidID> and returns result to discord channel.\n\n\
         This is just an initial proof of capability. Further features yet to be developed include automatically pushing attendance data into Google Sheets.```', msg);
         break;
@@ -563,7 +563,7 @@ client.on('message', msg => {
         case 'hello':
           sendChannel("Hello "+user,msg);
           break;
-        case 'attendance':
+        case 'trivialattendance':
           fetchAttendance(args, msg);
           break;
         case 'raid':
