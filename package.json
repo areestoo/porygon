@@ -9,6 +9,8 @@
     "discord.js": "^11.5.1",
     "google-spreadsheet": "^2.0.3",
     "google-spreadsheets": "^2.0.0",
+    "moment": "^2.24.0",
+    "node-fetch": "^2.6.0",
     "winston": "^3.2.1"
   }
 }

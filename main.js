@@ -389,6 +389,99 @@ function writeSpreadsheet(args,msg){
   }
 }
 
+function fetchAttendance(args, msg){
+	//Define all the variables
+	const fetch = require('node-fetch');
+	const wclogsauth = require('./wclogsauth.json');
+	const wclogsUrl = 'https://classic.warcraftlogs.com:443/v1';
+	const wclogsapiKey = wclogsauth.apikey;
+	const testraidID = 'xMNG3A8VfKQnZ64D';
+  const zone = {
+		moltencore: 1000,
+		onyxia: 1001,
+    blackwing: 1002
+	}	
+
+  try {
+    switch (args[0]){
+      case "raidlist":
+        fetch(wclogsUrl + '/reports/guild/Trivial/Arugal/US' + wclogsapiKey)
+              .then(response => response.json())
+              .then(data => {
+                if (args[1]){
+                  var daystosubtract = args[1];
+                } else {
+                  var daystosubtract = 7;
+                }
+                var output = '```Trivial Raids in last ' + daystosubtract + ' days.\n';
+                var cutoffdate = new Date(Date.now() - (daystosubtract * 24 * 60 * 60 * 1000));
+                data.forEach(function(raidID){
+                  var raidDate = new Date(0);
+                  raidDate.setUTCMilliseconds(raidID.start);
+                  var dmraidDate = raidDate.getDate() + "/" + raidDate.getMonth() + "/" + raidDate.getFullYear();
+                  if (raidDate.getTime() >= cutoffdate.getTime()){
+                    switch (raidID.zone){
+                      case 1000:
+                        var zoneName = "Molten Core";
+                        break;
+                      case 1001:
+                        var zoneName = "Onyxia's Lair";
+                        break;
+                      case 1002:
+                        var zoneName = "Blackwing Lair";
+                        break;
+                      default:
+                        var zoneName = "Unknown";
+                        break;
+                    }
+                    output += "RaidID: " + raidID.id + "\t\tDate: " + dmraidDate + "\t\tZone: " + zoneName + "\n";
+                  }
+                })
+                output += '```';
+                if (output.length <= 2000){
+                  sendChannel(output,msg);
+                } else {
+                  sendChannel('```Requested history too large for discord, please provide a smaller threshhold.```',msg);
+                }
+                
+              })
+        break;
+      case "fetch":
+        if (args[1] && args[1].length == 16){
+          raidID = args[1];
+          fetch(wclogsUrl + '/report/fights/' + raidID + wclogsapiKey)
+          .then(response => response.json())
+          .then(data => data.exportedCharacters)
+          .then(exportedChatacters => {
+            if (exportedChatacters == undefined){
+              sendChannel('```Unable to retrieve raid data. Please use !attendance raidlist to determine valid RaidID.```',msg);
+            } else {
+              var characterlist = '```';
+              exportedChatacters.forEach(function(character){
+                characterlist += character.name + "\n";
+              })
+              characterlist += '```';
+              sendChannel(characterlist,msg);
+            }
+          })
+        } else {
+          sendChannel('```Invalid RaidID provided. Please use !attendance raidlist to determine valid RaidID.```',msg);
+        }
+        break;
+      default:
+        sendChannel('```USAGE:\n\
+        !attendance raidlist [<days>]\n\
+        .Provides raid logs available from past 7 days. <days> is an optional argument to specify an alternate number of days to fetch raid history. If you make this threshold too large, discord isn\'t able to send the message.\n\n\
+        !attendance fetch <RaidID>\n\
+        .Fetches attendance from specified <RaidID> and returns result to discord channel.\n\n\
+        This is just an initial proof of capability. Further features yet to be developed include automatically pushing attendance data into Google Sheets.```', msg);
+        break;
+    }  
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
   client.user.setActivity('BEEP BOOP');
@@ -448,12 +541,14 @@ client.on('message', msg => {
       var args = msg.content.substring(1).split(' ');
       var cmd = args[0].toLowerCase();
       args = args.splice(1).join(" ");
+      /*
       if (args){
         argmsg = " *Args: " + args + "*";
       }
       else{
         argmsg = "";
       }
+      */
       //return input user
       args = args.split(" ");
       user = msg.member;
@@ -467,6 +562,9 @@ client.on('message', msg => {
           break;
         case 'hello':
           sendChannel("Hello "+user,msg);
+          break;
+        case 'attendance':
+          fetchAttendance(args, msg);
           break;
         case 'raid':
           //format - !raid <name> <id> <yyyy> <mm> <dd> <hh> <mm> <ss>
