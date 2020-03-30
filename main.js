@@ -395,12 +395,24 @@ function fetchAttendance(args, msg){
 	const wclogsauth = require('./wclogsauth.json');
 	const wclogsUrl = 'https://classic.warcraftlogs.com:443/v1';
 	const wclogsapiKey = wclogsauth.apikey;
-	const testraidID = 'xMNG3A8VfKQnZ64D';
-  const zone = {
-		moltencore: 1000,
-		onyxia: 1001,
-    blackwing: 1002
-	}	
+  const zoneWeights = {
+		moltencore: 30, //Molten Core 3pts per boss
+		onyxia: 3, //Onyxia 3pts per boss
+    blackwing: 32 //Blackwing Lair 4pts per boss
+  }
+
+  class Raider{
+    constructor(ign, sheetData){
+      this.ign = ign;
+      this.AttendancePoints = AttendancePoints;
+      this.mcCount = {
+        
+
+      };
+      this.onyCount = onyCount;
+      this.bwlCount = bwlCount;
+    }
+  }
 
   try {
     switch (args[0]){
@@ -451,15 +463,36 @@ function fetchAttendance(args, msg){
           raidID = args[1];
           fetch(wclogsUrl + '/report/fights/' + raidID + wclogsapiKey)
           .then(response => response.json())
-          .then(data => data.exportedCharacters)
-          .then(exportedChatacters => {
-            if (exportedChatacters == undefined){
+          .then(data => {
+            console.log(data);
+            if (data == undefined){
               sendChannel('```Unable to retrieve raid data. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
             } else {
-              var characterlist = '```';
-              exportedChatacters.forEach(function(character){
+              var exportedCharacters = data.exportedCharacters;
+              switch (data.zone){
+                case 1000:
+                  var attendanceWeight = zoneWeights.moltencore;
+                  break
+                case 1001:
+                  var attendanceWeight = zoneWeights.onyxia;
+                  break
+                case 1002:
+                  var attendanceWeight = zoneWeights.blackwing;
+                  break
+                default:
+                  var attendanceWeight = 0;
+                  break
+              }
+              var characterlist = '```Attendance Weight: ' + attendanceWeight +"\n";
+              exportedCharacters.forEach(function(character){
                 characterlist += character.name + "\n";
               })
+              if (args[2]){
+                sittingCharacters = args[2].split(",");
+                sittingCharacters.forEach(function(character){
+                  characterlist += character + "\n";
+                })
+              }
               characterlist += '```';
               sendChannel(characterlist,msg);
             }
@@ -468,13 +501,56 @@ function fetchAttendance(args, msg){
           sendChannel('```Invalid RaidID provided. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
         }
         break;
+      case "publish":
+          if (args[1] && args[1].length == 16){
+            raidID = args[1];
+            fetch(wclogsUrl + '/report/fights/' + raidID + wclogsapiKey)
+            .then(response => response.json())
+            .then(data => {
+              console.log(data);
+              if (data == undefined){
+                sendChannel('```Unable to retrieve raid data. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
+              } else {
+                var exportedCharacters = data.exportedCharacters;
+                switch (data.zone){
+                  case 1000:
+                    var attendanceWeight = zoneWeights.moltencore;
+                    break
+                  case 1001:
+                    var attendanceWeight = zoneWeights.onyxia;
+                    break
+                  case 1002:
+                    var attendanceWeight = zoneWeights.blackwing;
+                    break
+                  default:
+                    var attendanceWeight = 0;
+                    break
+                }
+                var characterlist = '```Attendance Weight: ' + attendanceWeight +"\n";
+                exportedCharacters.forEach(function(character){
+                  characterlist += character.name + "\n";
+                })
+                if (args[2]){
+                  sittingCharacters = args[2].split(",");
+                  sittingCharacters.forEach(function(character){
+                    characterlist += character + "\n";
+                  })
+                }
+                characterlist += '```';
+                sendChannel(characterlist,msg);
+              }
+            })
+          } else {
+            sendChannel('```Invalid RaidID provided. Please use !trivialattendance raidlist to determine valid RaidID.```',msg);
+          }
+        break;
       default:
         sendChannel('```USAGE:\n\
-        !trivialattendance raidlist [<days>]\n\
-        .Provides raid logs available from past 7 days. <days> is an optional argument to specify an alternate number of days to fetch raid history. If you make this threshold too large, discord isn\'t able to send the message.\n\n\
-        !trivialattendance fetch <RaidID>\n\
-        .Fetches attendance from specified <RaidID> and returns result to discord channel.\n\n\
-        This is just an initial proof of capability. Further features yet to be developed include automatically pushing attendance data into Google Sheets.```', msg);
+!trivialattendance raidlist [<days>]\n\
+.Provides raid logs available from past 7 days. <days> is an optional argument to specify an alternate number of days to fetch raid history. If you make this threshold too large, discord isn\'t able to send the message.\n\n\
+!trivialattendance fetch <RaidID> [<sittingcharacters>]\n\
+.Fetches attendance from specified <RaidID> and returns result to discord channel. Additional Characters can be injected into the output list with the optional <sittingCharacters> argument. This must be a comma seperated string with no spaces. e.g. Vox,Ari,BigChase\n\n\
+This is just an initial proof of capability. Further features yet to be developed include automatically pushing attendance data into Google Sheets.```', msg);
         break;
     }  
   } catch (error) {
@@ -541,14 +617,6 @@ client.on('message', msg => {
       var args = msg.content.substring(1).split(' ');
       var cmd = args[0].toLowerCase();
       args = args.splice(1).join(" ");
-      /*
-      if (args){
-        argmsg = " *Args: " + args + "*";
-      }
-      else{
-        argmsg = "";
-      }
-      */
       //return input user
       args = args.split(" ");
       user = msg.member;
