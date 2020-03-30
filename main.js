@@ -1,5 +1,6 @@
 //SETUP
-var auth = require('./auth.json');
+//var auth = require('./auth.json');
+var auth = require('./voxauth.json');
 const EVENT_LOG = ('event_log.json');
 var fs = require('fs');
 process.env.TZ = 'Europe/Amsterdam'
@@ -583,3 +584,38 @@ client.on('message', msg => {
 });
 
 client.login(auth.token)
+
+
+async function writeAttendance(){
+  //const GoogleSpreadsheet = require('google-spreadsheet');
+
+  const LootSpreadsheet = {
+    sheetID: "19WQuvM-h3SiRT-IlDkREWR3Bk8iQp9N21NH70Y2-tq8",
+    tabIDs: {
+      PlayerList: "0d6",
+      Attendance: "oers034"
+    }
+  }
+  var doc = new GoogleSpreadsheet(LootSpreadsheet.sheetID);
+  
+  //const doc = new GoogleSpreadsheet('sheetID');
+  // spreadsheet key is the long id in the sheets URL
+  //const doc = new GoogleSpreadsheet('<the sheet ID from the url>');
+
+  // use service account creds
+  const voxcreds = require('./voxcredentials.json');
+  doc.useServiceAccountAuth(voxcreds, function (err) {
+    doc.getInfo(function (err, info){
+      console.log(info);
+    });
+
+    doc.getRows('0dubbi6', function (err, rows){
+      console.log(rows);
+    });
+  });
+
+  //doc.loadInfo(); // loads document properties and worksheets
+  //console.log(doc);
+}
+
+writeAttendance();
